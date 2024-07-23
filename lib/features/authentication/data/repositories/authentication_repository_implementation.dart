@@ -25,8 +25,8 @@ class AuthenticationRepositoryImplementation
         createdAt: createdAt, name: name, avatar: avatar);
 
     return const Right(null);
-   } on ApiException catch (e) {
-    return  Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+   } on APIException catch (e) {
+    return  Left(APIFailure.fromException(e));
      
    }
   }

@@ -22,7 +22,7 @@ void main() {
   const avatar = 'avatar';
 
   const tException =
-      ApiException(message: "Unknown Error Occured", statusCode: 500);
+      APIException(message: "Unknown Error Occured", statusCode: 500);
   group('createUser', () {
     test(
         'should call the [RemoteDataSource.createUser] and complete '
@@ -60,7 +60,7 @@ void main() {
           createdAt: createdAt, name: name, avatar: avatar);
 
       // Assert
-      expect(result, equals( Left(ApiFailure(message: tException.message, statusCode: tException.statusCode))));
+      expect(result, equals( Left(APIFailure(message: tException.message, statusCode: tException.statusCode))));
 
       verify(() => remoteDataSource.createUser(
           createdAt: createdAt, name: name, avatar: avatar)).called(1);
