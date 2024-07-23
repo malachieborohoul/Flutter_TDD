@@ -32,10 +32,9 @@ void main() {
       // Assert
       expect(result, equals(tModel));
     });
-
   });
 
-    group('fromJson', () {
+  group('fromJson', () {
     test('should return a [UserModel] with the right data', () {
       // Arrange
       // Act
@@ -45,5 +44,9 @@ void main() {
       expect(result, equals(tModel));
     });
 
+    group('toMap', () {
+      final result = tModel.toMap();
+      expect(result, equals(tMap));
+    });
   });
 }
