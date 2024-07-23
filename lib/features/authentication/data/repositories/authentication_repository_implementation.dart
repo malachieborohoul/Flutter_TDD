@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:tdd_tutorial/core/errors/exceptions.dart';
+import 'package:tdd_tutorial/core/errors/failure.dart';
 import 'package:tdd_tutorial/core/utils/typedef.dart';
 import 'package:tdd_tutorial/features/authentication/data/datasources/authentication_remote_data_source.dart';
 import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
@@ -18,10 +20,15 @@ class AuthenticationRepositoryImplementation
     // Check if the method returns the proper data
     //    Check if when the remoteDataSource throws an exception, we return a failure
     // and if it doesn't throw and exception, we return the actual expected data
-    await _remoteDataSource.createUser(
+   try {
+      await _remoteDataSource.createUser(
         createdAt: createdAt, name: name, avatar: avatar);
 
     return const Right(null);
+   } on ApiException catch (e) {
+    return  Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+     
+   }
   }
 
   @override
