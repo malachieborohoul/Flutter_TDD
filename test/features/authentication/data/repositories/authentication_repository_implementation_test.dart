@@ -4,7 +4,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:tdd_tutorial/core/errors/exceptions.dart';
 import 'package:tdd_tutorial/core/errors/failure.dart';
 import 'package:tdd_tutorial/features/authentication/data/datasources/authentication_remote_data_source.dart';
+import 'package:tdd_tutorial/features/authentication/data/models/user_model.dart';
 import 'package:tdd_tutorial/features/authentication/data/repositories/authentication_repository_implementation.dart';
+import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
 
 class MockAuthenticationRemoteDataSource extends Mock
     implements AuthenticationRemoteDataSource {}
@@ -60,11 +62,59 @@ void main() {
           createdAt: createdAt, name: name, avatar: avatar);
 
       // Assert
-      expect(result, equals( Left(APIFailure(message: tException.message, statusCode: tException.statusCode))));
+      expect(
+          result,
+          equals(Left(APIFailure(
+              message: tException.message,
+              statusCode: tException.statusCode))));
 
       verify(() => remoteDataSource.createUser(
           createdAt: createdAt, name: name, avatar: avatar)).called(1);
       verifyNoMoreInteractions(remoteDataSource);
+    });
+  });
+
+  final tResponse = [const UserModel.empty()];
+  group('getUsers', () {
+    test(
+        'should call the [RemoteDataSource.getUsers] and complete '
+        'succesfully when the call to the remote source is successfull ',
+        () async {
+      //Arrange
+
+      when(() => remoteDataSource.getUsers())
+          .thenAnswer((_) async => Future.value(tResponse));
+
+      //Act
+      final result = await repositoryImplementation.getUsers();
+
+      //Assert
+
+      expect(result, equals(Right(tResponse)));
+
+      verify(() => remoteDataSource.getUsers()).called(1);
+
+    });
+
+    test(
+        'should return an [APIFailure] when the call to the '
+        'remote source is unsuccessfull',
+        () async {
+      //Arrange
+
+      when(() => remoteDataSource.getUsers())
+          .thenThrow(tException);
+
+      //Act
+      final result = await repositoryImplementation.getUsers();
+
+      //Assert
+
+      expect(result, equals(Left(APIFailure(message: tException.message, statusCode: tException.statusCode))));
+
+      verify(() => remoteDataSource.getUsers()).called(1);
+       verifyNoMoreInteractions(remoteDataSource);
+      
     });
   });
 }
