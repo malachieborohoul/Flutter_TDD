@@ -29,6 +29,15 @@ void main() {
     final result = await usecase();
     //Assert
 
-    expect(result, equals(const Right<dynamic, List<User>>([User.empty()])));
+    expect(
+      result,
+      equals(
+        const Right<dynamic, List<User>>([User.empty()]),
+      ),
+    );
+
+    verify(() => repository.getUsers()).called(1);
+
+    verifyNoMoreInteractions(repository);
   });
 }
