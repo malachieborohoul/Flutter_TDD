@@ -3,31 +3,32 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
 import 'package:tdd_tutorial/features/authentication/domain/repositories/authentication_repository.dart';
-import 'package:tdd_tutorial/features/authentication/domain/usecases/create_user.dart';
+import 'package:tdd_tutorial/features/authentication/domain/usecases/get_users.dart';
 
 class MockAuthenticationRepository extends Mock
     implements AuthenticationRepository {}
 
 void main() {
   late AuthenticationRepository repository;
-  late CreateUser usecase;
-  const params = CreateUserParams.empty();
+  late GetUsers usecase;
+
   setUp(() {
     repository = MockAuthenticationRepository();
-    usecase = CreateUser(repository);
+    usecase = GetUsers(repository);
   });
 
-  test('should call [Repository.createUser]', () async {
+  test('should call [Repository.getUsers]', () async {
     //Arrange
-    when(() => repository.createUser(
-            createdAt: any(named: 'createdAt'),
-            name: any(named: 'name'),
-            avatar: any(named: 'avatar')))
-        .thenAnswer((_) async => const Right(null));
+    when(() => repository.getUsers()).thenAnswer(
+      (_) async => const Right(
+        [User.empty()],
+      ),
+    );
     //Act
-    final result = await usecase(params);
+
+    final result = await usecase();
     //Assert
 
-    expect(result, equals(const Right<dynamic, void>(null)));
+    expect(result, equals(const Right<dynamic, List<User>>([User.empty()])));
   });
 }
