@@ -5,8 +5,9 @@ import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
 import 'package:tdd_tutorial/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:tdd_tutorial/features/authentication/domain/usecases/get_users.dart';
 
-class MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+import 'authentication_repository.mock.dart';
+
+
 
 void main() {
   late AuthenticationRepository repository;
