@@ -4,22 +4,19 @@ import 'package:tdd_tutorial/core/errors/failure.dart';
 import 'package:tdd_tutorial/core/utils/typedef.dart';
 import 'package:tdd_tutorial/features/authentication/data/datasources/authentication_remote_data_source.dart';
 import 'package:tdd_tutorial/features/authentication/data/models/user_model.dart';
+import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
 import 'package:tdd_tutorial/features/authentication/domain/repositories/authentication_repository.dart';
 
 class AuthenticationRepositoryImplementation
     implements AuthenticationRepository {
   final AuthenticationRemoteDataSource _remoteDataSource;
+
   const AuthenticationRepositoryImplementation(this._remoteDataSource);
   @override
   ResultVoid createUser(
       {required String createdAt,
       required String name,
       required String avatar}) async {
-    // Test-Driven Development
-    // Call the remote data source
-    // Check if the method returns the proper data
-    //    Check if when the remoteDataSource throws an exception, we return a failure
-    // and if it doesn't throw and exception, we return the actual expected data
     try {
       await _remoteDataSource.createUser(
           createdAt: createdAt, name: name, avatar: avatar);
@@ -33,8 +30,8 @@ class AuthenticationRepositoryImplementation
   @override
   ResultFuture<List<UserModel>> getUsers() async {
     try {
-    final result = await _remoteDataSource.getUsers();
-      return  Right(result);
+      final result = await _remoteDataSource.getUsers();
+      return Right(result);
     } on APIException catch (e) {
       return Left(APIFailure.fromException(e));
     }
