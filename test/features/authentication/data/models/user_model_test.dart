@@ -63,5 +63,11 @@ void main() {
     });
   });
 
-  group('copyWith', () {});
+  group('copyWith', () {
+    test('should return a [UserModel] with different data', () {
+      final result = tModel.copyWith(id: "2");
+
+      expect(result.id, equals("2"));
+    });
+  });
 }
