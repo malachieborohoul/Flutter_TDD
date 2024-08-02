@@ -7,22 +7,21 @@ import 'package:tdd_tutorial/features/authentication/domain/usecases/get_users.d
 
 import 'authentication_repository.mock.dart';
 
-
-
 void main() {
   late AuthenticationRepository repository;
   late GetUsers usecase;
+  const tResponse = [User.empty()];
 
   setUp(() {
     repository = MockAuthenticationRepository();
     usecase = GetUsers(repository);
   });
 
-  test('should call [Repository.getUsers]', () async {
+  test('should call [Repository.getUsers] and return [List<User>]', () async {
     //Arrange
     when(() => repository.getUsers()).thenAnswer(
       (_) async => const Right(
-        [User.empty()],
+        tResponse,
       ),
     );
     //Act
@@ -33,7 +32,7 @@ void main() {
     expect(
       result,
       equals(
-        const Right<dynamic, List<User>>([User.empty()]),
+        const Right<dynamic, List<User>>(tResponse),
       ),
     );
 
