@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:tdd_tutorial/core/errors/exceptions.dart';
 import 'package:tdd_tutorial/core/utils/constants.dart';
 import 'package:tdd_tutorial/features/authentication/data/datasources/authentication_remote_data_source.dart';
+import 'package:tdd_tutorial/features/authentication/data/models/user_model.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -33,10 +34,7 @@ void main() {
       expect(methodCall(createdAt: createdAt, name: name, avatar: avatar),
           completes);
 
-      verify(() => client.post(
-              Uri.parse(
-                '$kBaseUrl$kCreateUserEndpoint',
-              ),
+      verify(() => client.post(Uri.https(kBaseUrl, kCreateUserEndpoint),
               body: jsonEncode(
                   {'createdAt': createdAt, 'name': name, 'avatar': avatar})))
           .called(1);
@@ -49,19 +47,56 @@ void main() {
       when(() => client.post(any(), body: any(named: 'body')))
           .thenAnswer((_) async => http.Response('Invalid email address', 400));
 
-      final methodCall =  remoteDataSource.createUser;
+      final methodCall = remoteDataSource.createUser;
 
       expect(
-          () async => methodCall(createdAt: createdAt, name: name, avatar: avatar),
-          throwsA(
-              const APIException(message: 'Invalid email address', statusCode: 400,),),);
+        () async =>
+            methodCall(createdAt: createdAt, name: name, avatar: avatar),
+        throwsA(
+          const APIException(
+            message: 'Invalid email address',
+            statusCode: 400,
+          ),
+        ),
+      );
 
-       verify(() => client.post(
+      verify(() => client.post(
               Uri.parse(
                 '$kBaseUrl$kCreateUserEndpoint',
               ),
               body: jsonEncode(
                   {'createdAt': createdAt, 'name': name, 'avatar': avatar})))
+          .called(1);
+
+      verifyNoMoreInteractions(client);
+    });
+  });
+
+  group('getUsers', () {
+    const tUsers = [UserModel.empty()];
+    test('should return [List<User>] when status code is 200', () async {
+      when(() => client.get(any())).thenAnswer(
+          (_) async => http.Response(jsonEncode([tUsers.first.toMap()]), 200));
+
+      final result = await remoteDataSource.getUsers();
+
+      expect(result, equals(tUsers));
+      verify(() => client.get(Uri.https(kBaseUrl, kCreateUserEndpoint)))
+          .called(1);
+
+      verifyNoMoreInteractions(client);
+    });
+    const tMessage = "Server down";
+    test('should throw an [APIException if status is not 200]', () async {
+      when(() => client.get(any()))
+          .thenAnswer((_) async => http.Response(tMessage, 500));
+
+      final methodCall = await remoteDataSource.getUsers;
+
+      expect(methodCall(),
+          throwsA(const APIException(message: tMessage, statusCode: 500)));
+
+      verify(() => client.get(Uri.https(kBaseUrl, kCreateUserEndpoint)))
           .called(1);
 
       verifyNoMoreInteractions(client);
