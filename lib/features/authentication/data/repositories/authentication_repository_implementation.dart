@@ -4,7 +4,6 @@ import 'package:tdd_tutorial/core/errors/failure.dart';
 import 'package:tdd_tutorial/core/utils/typedef.dart';
 import 'package:tdd_tutorial/features/authentication/data/datasources/authentication_remote_data_source.dart';
 import 'package:tdd_tutorial/features/authentication/data/models/user_model.dart';
-import 'package:tdd_tutorial/features/authentication/domain/entities/user.dart';
 import 'package:tdd_tutorial/features/authentication/domain/repositories/authentication_repository.dart';
 
 class AuthenticationRepositoryImplementation
